@@ -924,7 +924,7 @@ BEGIN
 	insert into dbo.Table_Size_History(Id_Server, Id_Database, Id_Table, Nm_Drive, 
 				Nr_Total_Size, Nr_Data_Size, Nr_Index_Size, Qt_Rows, Dt_Log)
 	select	B.Id_Server, D.Id_Database, C.Id_Table ,UPPER(A.Nm_Drive),
-			sum(Reserved_in_kb)/1024.00 [Reservado (KB)], 
+			sum(CAST(Reserved_in_kb AS BIGINT))/1024.00 [Reservado (KB)], 
 			sum(case when Type_Desc in ('CLUSTERED', 'HEAP') then Reserved_in_kb else 0 end)/1024.00 [Dados (KB)], 
 			sum(case when Type_Desc in ('NONCLUSTERED') then Reserved_in_kb else 0 end)/1024.00 [Indices (KB)],
 			max(Tbl_Rows) Qtd_Linhas,
