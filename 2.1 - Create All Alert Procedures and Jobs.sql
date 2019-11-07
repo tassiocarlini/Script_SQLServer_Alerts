@@ -7294,71 +7294,72 @@ GO
 
 
 
-CREATE PROCEDURE dbo.stpAlert_Every_Minute
-AS
-BEGIN
-
-	--Alerts
-	EXEC dbo.stpWhoIsActive_Result
-
-	-- Just on the business time
-	IF ( DATEPART(HOUR, GETDATE()) >= 6 AND DATEPART(HOUR, GETDATE()) < 23 )
-	BEGIN
-		EXEC dbo.stpAlert_Blocked_Process 'Blocked Process'
-
-		EXEC dbo.stpAlert_Blocked_Process 'Blocked Long Process'
-
-		EXEC dbo.stpAlert_CPU_Utilization
-
-	END
-
-	EXEC dbo.stpAlert_CPU_Utilization_MI
-
-	EXEC dbo.stpAlert_Database_Status
-
-	EXEC dbo.stpAlert_IO_Pending 
-
-	EXEC dbo.stpAlert_Large_LDF_File
-
-	EXEC dbo.stpAlert_Log_Full
-
-	EXEC dbo.stpAlert_Memory_Available
-
-	EXEC dbo.stpAlert_Page_Corruption
-	
-
-	-- Executado a cada 20 minutos
-	IF ( DATEPART(mi, GETDATE()) %20 = 0 )
-	BEGIN
-		EXEC dbo.stpAlert_SQLServer_Restarted
-	END
-	
-	-- Every Five minute
-	IF  DATEPART(MINUTE,GETDATE()) % 5 = 0 
-	BEGIN
-		EXEC dbo.stpAlert_Disk_Space
-		EXEC dbo.stpAlert_Tempdb_MDF_File_Utilization
-	END
-
-	IF  DATEPART(MINUTE,GETDATE()) = 58 -- Every hour
-	BEGIN 
-		EXEC dbo.stpRead_Error_log 1 -- Just if Error Log size < 5 MB (VL_Parameter_2). 
-		EXEC dbo.stpAlert_Slow_Disk 'Slow Disk Every Hour' --Disable by default. Do a update on the table Alert_Parameter
-		EXEC dbo.stpAlert_SQLServer_Connection
-		EXEC dbo.stpAlert_Database_Without_Log_Backup
-		EXEC stpAlert_MaxSize_Growth
-	END
-
-	--IF CONVERT(char(20), SERVERPROPERTY('IsClustered')) = 1	
-	--BEGIN	
-	--	EXEC stpAlert_Cluster_Active_Node
-	--	EXEC stpAlert_Cluster_Node_Status
-	--END
-
-END
+  
+CREATE PROCEDURE dbo.stpAlert_Every_Minute  
+AS  
+BEGIN  
+  
+ --Alerts  
+ EXEC dbo.stpWhoIsActive_Result  
+  
+ -- Just on the business time  
+ IF ( DATEPART(HOUR, GETDATE()) >= 7 AND DATEPART(HOUR, GETDATE()) < 22 )  
+ BEGIN  
+  EXEC dbo.stpAlert_Blocked_Process 'Blocked Process'  
+  
+  EXEC dbo.stpAlert_Blocked_Process 'Blocked Long Process'  
+  
+  EXEC dbo.stpAlert_CPU_Utilization  
+  
+  EXEC dbo.stpAlert_IO_Pending 
+  
+ END  
+  
+ EXEC dbo.stpAlert_CPU_Utilization_MI  
+  
+ EXEC dbo.stpAlert_Database_Status  
+  
+ EXEC dbo.stpAlert_Large_LDF_File  
+  
+ EXEC dbo.stpAlert_Log_Full  
+  
+ EXEC dbo.stpAlert_Memory_Available  
+  
+ EXEC dbo.stpAlert_Page_Corruption  
+   
+  
+ -- Executado a cada 20 minutos  
+ IF ( DATEPART(mi, GETDATE()) %20 = 0 )  
+ BEGIN  
+  EXEC dbo.stpAlert_SQLServer_Restarted  
+ END  
+   
+ -- Every Five minute  
+ IF  DATEPART(MINUTE,GETDATE()) % 5 = 0   
+ BEGIN  
+  EXEC dbo.stpAlert_Disk_Space  
+  EXEC dbo.stpAlert_Tempdb_MDF_File_Utilization  
+ END  
+  
+ IF  DATEPART(MINUTE,GETDATE()) = 58 -- Every hour  
+ BEGIN   
+  EXEC dbo.stpRead_Error_log 1 -- Just if Error Log size < 5 MB (VL_Parameter_2).   
+  EXEC dbo.stpAlert_Slow_Disk 'Slow Disk Every Hour' --Disable by default. Do a update on the table Alert_Parameter  
+  EXEC dbo.stpAlert_SQLServer_Connection  
+  EXEC dbo.stpAlert_Database_Without_Log_Backup  
+  EXEC stpAlert_MaxSize_Growth  
+ END  
+  
+ --IF CONVERT(char(20), SERVERPROPERTY('IsClustered')) = 1   
+ --BEGIN   
+ -- EXEC stpAlert_Cluster_Active_Node  
+ -- EXEC stpAlert_Cluster_Node_Status  
+ --END  
+  
+END  
 GO
 GO
-IF ( OBJECT_ID('[dbo].[stpAlert_Every_Day]') IS NOT NULL ) 
+	      IF ( OBJECT_ID('[dbo].[stpAlert_Every_Day]') IS NOT NULL ) 
 	DROP PROCEDURE [dbo].stpAlert_Every_Day
 GO
 
