@@ -1522,7 +1522,7 @@ BEGIN
 			  RIGHT('00' + SUBSTRING([Run_Time],(LEN([Run_Time])-3), 2), 2) + ':' +
 			  RIGHT('00' + SUBSTRING([Run_Time],(LEN([Run_Time])-1), 2), 2) AS DATETIME) < @hoje
 		  --AND [Step_Id] = 0 tratamento para o Retry do Job
-		  AND [Run_Status] <> 1
+		  AND [Run_Status] = 0
 	 
 	IF (@@ROWCOUNT = 0)
 	BEGIN
